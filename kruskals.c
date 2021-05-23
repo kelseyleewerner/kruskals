@@ -10,18 +10,32 @@
          // for usleep
 
 
-// The adjacency matrix for the graph :
 int N ; // number of nodes (vertices)
 int A[100][100] ; // adjacency matrix of the graph
+typedef struct edge {
+  int weight;
+  int vertex1;
+  int vertex2;
+} edge; // individual edge
+int E = 0; // number of edges in the graph
+edge Edges[1000]; // all edges of graph
+int MST_E; // number of edges in the MST
+edge * MST; // minimum search tree
 
 int input_graph();
 int print_graph();
+void collect_edges();
+void print_edges(edge *, int);
 
 
 int main()
 {
   input_graph() ;// N, A{}{}
+  printf("Graph:\n");
   print_graph() ;
+  collect_edges();
+  printf("All edges in graph:\n\n");
+  print_edges(Edges, E);
 }
 
 
@@ -80,5 +94,55 @@ int print_graph()
   }
   printf("\n") ;
 }
+
+
+void collect_edges()
+{
+  for (int r = 0; r < N; ++r) {
+    for (int c = r + 1; c < N; ++c) {
+      if (A[r][c] != -1) {
+        Edges[E].weight = A[r][c] ;
+        Edges[E].vertex1 = r;
+        Edges[E].vertex2 = c;
+        ++E;
+      }
+    }
+  }
+}
+
+
+void print_edges(edge * edges, int count)
+{
+  for (int e = 0; e < count; ++e){
+    printf("%d%c%c ", edges[e].weight, edges[e].vertex1+'A', edges[e].vertex2+'A');
+  }
+  printf("\n");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
