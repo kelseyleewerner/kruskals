@@ -26,16 +26,34 @@ int input_graph();
 int print_graph();
 void collect_edges();
 void print_edges(edge *, int);
+void mergesort(edge * arr, int lo, int hi);
+void merge(edge * arr, int lo1, int hi1, int lo2, int hi2);
 
 
 int main()
 {
+  // create adjacency list of graph vertices
   input_graph() ;// N, A{}{}
   printf("Graph:\n");
   print_graph() ;
+
+  MST_E = N - 1;
+  MST = malloc(sizeof(edge) * MST_E);
+
+  // collect and sort list of edges in the graph
   collect_edges();
   printf("All edges in graph:\n\n");
   print_edges(Edges, E);
+  mergesort(Edges, 0, E - 1);
+  printf("Sorted edges in graph:\n\n");
+  print_edges(Edges, E);
+
+  // create minimum search tree
+
+
+
+
+  free(MST);
 }
 
 
@@ -116,14 +134,47 @@ void print_edges(edge * edges, int count)
   for (int e = 0; e < count; ++e){
     printf("%d%c%c ", edges[e].weight, edges[e].vertex1+'A', edges[e].vertex2+'A');
   }
-  printf("\n");
+  printf("\n\n");
 }
 
 
+void mergesort(edge * arr, int lo, int hi)
+{
+  int mid;
+
+  if (lo < hi) {
+    mid = (lo + hi) / 2;
+    mergesort(arr, lo, mid);
+    mergesort(arr, mid + 1, hi);
+    merge(arr, lo, mid, mid + 1, hi);
+  }
+}
 
 
+void merge(edge * arr, int lo1, int hi1, int lo2, int hi2)
+{
+  edge temp[E];
+  int c1 = lo1;
+  int c2 = lo2;
+  int t_index = 0;
+  int i, j;
 
+  while (c1 <= hi1 && c2 <=hi2) {
+    if (arr[c1].weight < arr[c2].weight)
+      temp[t_index++] = arr[c1++];
+    else
+      temp[t_index++] = arr[c2++];
+  }
 
+  while (c1 <= hi1)
+    temp[t_index++] = arr[c1++];
+
+  while (c2 <= hi2)
+    temp[t_index++] = arr[c2++];
+
+  for (i = lo1, j = 0; i <= hi2; ++i, ++j)
+    arr[i] = temp[j];
+}
 
 
 
