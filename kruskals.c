@@ -28,6 +28,7 @@ void collect_edges();
 void print_edges(edge *, int);
 void mergesort(edge * arr, int lo, int hi);
 void merge(edge * arr, int lo1, int hi1, int lo2, int hi2);
+edge * create_mst();
 
 
 int main()
@@ -49,9 +50,9 @@ int main()
   print_edges(Edges, E);
 
   // create minimum search tree
-
-
-
+  create_mst();
+  printf("Edges in the MST:\n\n");
+  print_edges(MST, MST_E);
 
   free(MST);
 }
@@ -175,6 +176,68 @@ void merge(edge * arr, int lo1, int hi1, int lo2, int hi2)
   for (i = lo1, j = 0; i <= hi2; ++i, ++j)
     arr[i] = temp[j];
 }
+
+
+edge * create_mst()
+{
+  int trees[N];
+  int tree_count = 0;
+  int prev_tree, new_tree;
+  edge curr_edge;
+
+  for (int i = 0; i < N; ++i) { trees[i] = -1; }
+
+  for (int e = 0, t = 0; e < E && t < MST_E; ++e) {
+
+    curr_edge = Edges[e];
+
+    if (trees[curr_edge.vertex1] == -1 && trees[curr_edge.vertex2] == -1) {
+      ++tree_count;
+      trees[curr_edge.vertex1] = tree_count;
+      trees[curr_edge.vertex2] = tree_count;
+    } else if (trees[curr_edge.vertex1] == -1) {
+      trees[curr_edge.vertex1] = trees[curr_edge.vertex2];
+    } else if (trees[curr_edge.vertex2] == -1) {
+      trees[curr_edge.vertex2] = trees[curr_edge.vertex1];
+    } else if (trees[curr_edge.vertex1] != trees[curr_edge.vertex2]) {
+      --tree_count;
+
+      if (trees[curr_edge.vertex1] > trees[curr_edge.vertex2]) {
+        prev_tree = trees[curr_edge.vertex1];
+        new_tree = trees[curr_edge.vertex2];
+      } else {
+        prev_tree = trees[curr_edge.vertex2];
+        new_tree = trees[curr_edge.vertex1];
+      }
+
+      for (int i = 0; i < N; ++i) {
+        if (trees[i] == prev_tree) {
+          trees[i] = new_tree;
+        } else if (trees[i] > prev_tree) {
+          --trees[i];
+        }
+      }
+    } else { continue; }
+
+    MST[t].weight = curr_edge.weight;
+    MST[t].vertex1 = curr_edge.vertex1;
+    MST[t].vertex2 = curr_edge.vertex2;
+    ++t;
+  }
+
+  return MST;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
